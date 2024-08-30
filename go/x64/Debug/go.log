@@ -1,0 +1,2 @@
+﻿  go.cpp
+D:\coding\sfml\animate\go\go\go.cpp(1,10): error C1083: 無法開啟包含檔案: 'SFML/Graphics.hpp': No such file or directory
