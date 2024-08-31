@@ -3,18 +3,21 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <deque>
 #define width 800
 #define height 600
 class dot_dot
 {
     private:
-        float speed = 1.0f; // 固定速度
+        float speed = 2.0f; // 固定速度
         float now_x;
         float now_y;
         float target_x = static_cast<float>(rand() % 800);
         float target_y = static_cast<float>(rand() % 600);
         sf::Vector2f direction; // 移動方向向量
         sf::CircleShape ball;
+        std::deque<sf::Vertex> trail; // 用來儲存軌跡點
+        static constexpr int MAX_TRAIL_LENGTH = 1000; // 最大軌跡長度
     public:
         dot_dot(float size,float x= rand() % width, float y= rand() % height)
         //給出生點座標，生成一顆球
@@ -30,6 +33,7 @@ class dot_dot
         void display(sf::RenderWindow& window)
         {
             window.draw(ball);
+            drawTrail(window);  // 繪製軌跡
         }
         void updatePosit(float x, float y)
         {
@@ -64,7 +68,7 @@ class dot_dot
 
             // 設置小球的新位置
             ball.setPosition(now_x, now_y);
-
+            updateTrail();
             std::cout << now_x << "," << now_y << "\n";
         }
         void move() { move(speed); }
@@ -94,10 +98,45 @@ class dot_dot
             direction.y = (direction.y / length);
             // 更新小球位置
             ball.setPosition(now_x, now_y);
+            //updateTrail();
         }
+private:
+    void updateTrail()
+    {
+        // 添加當前位置到軌跡
+        sf::Vertex vertex(sf::Vector2f(now_x + ball.getRadius(), now_y + ball.getRadius()));
+        vertex.color = sf::Color(255, 0, 255, 255); // 初始顏色 (不透明)
+        trail.push_back(vertex);
+
+        // 如果超過最大長度，刪除最舊的點
+        if (trail.size() > MAX_TRAIL_LENGTH)
+        {
+            trail.pop_front();
+        }
+
+        // 更新軌跡的顏色透明度
+        for (std::size_t i = 0; i < trail.size(); ++i)
+        {
+            sf::Vertex& v = trail[i];
+            float alpha = 255 * (1.0f - static_cast<float>(i) / MAX_TRAIL_LENGTH); // 漸變透明度
+            v.color.a = static_cast<sf::Uint8>(alpha);
+        }
+    }
+    void drawTrail(sf::RenderWindow& window)
+    {
+        // 將 std::deque 轉換為 sf::VertexArray 進行繪製
+        sf::VertexArray trailArray(sf::LinesStrip, trail.size());
+        for (std::size_t i = 0; i < trail.size(); ++i)
+        {
+            trailArray[i] = trail[i];
+        }
+        window.draw(trailArray);  // 繪製軌跡
+    }
 };
 int main()
 {
+
+
 
     srand(static_cast<unsigned>(time(NULL)));
     // 創建一個 800x600 的視窗
@@ -121,17 +160,19 @@ int main()
         //window.clear(sf::Color::Yellow); // 設定背景顏色為黑色
         //window.display();
         // 移動每顆球
+
         for (auto& ball : ball_group1)
         {
-            ball.move(0.1); // 每顆球移動
+            ball.move(0.1f); // 每顆球移動
         }
 
-        window.clear(sf::Color::Yellow);
+        window.clear();
         for (auto& ball : ball_group1)
         {
             ball.display(window);
         }
         window.display();
+
     }
 
     return 0;

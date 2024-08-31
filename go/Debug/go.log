@@ -1,3 +1,2 @@
 ﻿  go.cpp
-D:\coding\sfml\animate\go\go\go.cpp(126,23): warning C4305: '引數': 從 'double' 轉換為 'float'，是由較大的類型轉換為較小的類型，可能導致資料遺失
   go.vcxproj -> D:\coding\sfml\animate\go\Debug\go.exe
