@@ -13,9 +13,9 @@
 #define ballColor sf::Color::Color(154, 201, 60, 255)
 #define bgColor sf::Color::Color(0, 0, 25, 255)
 
-#define enable_trail 1 //bool: 0 or 1
+#define enable_trail 0 //bool: 0 or 1
 #define MAX_TRAIL_LENGTH 50
-#define ballSpeed 0.5f
+#define ballSpeed 0.2f
 #define ballSize 1.f
 #define ballCount 300
 class dot_dot
