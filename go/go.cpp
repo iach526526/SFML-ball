@@ -17,7 +17,7 @@ class dot_dot
         sf::Vector2f direction; // 移動方向向量
         sf::CircleShape ball;
         std::deque<sf::Vertex> trail; // 用來儲存軌跡點
-        static constexpr int MAX_TRAIL_LENGTH = 1000; // 最大軌跡長度
+        static constexpr int MAX_TRAIL_LENGTH = 100; // 最大軌跡長度
     public:
         dot_dot(float size,float x= rand() % width, float y= rand() % height)
         //給出生點座標，生成一顆球
@@ -27,8 +27,8 @@ class dot_dot
             ball.setFillColor(sf::Color::Magenta);
             ball.setPosition(x, y); // 設定小球初始位置，使其在視窗中心附近
             updatePosit(x, y);
-            moveRandomly();
-            direction = sf::Vector2f(static_cast<float>(rand() % 10), static_cast<float>(rand() % 10)); // 初始方向，可以設置為任意值
+            //moveRandomly();
+            direction = sf::Vector2f(static_cast<float>(rand() % 360)-180, static_cast<float>(rand() % 360)-180); // 初始方向，可以設置為任意值
         }
         void display(sf::RenderWindow& window)
         {
@@ -68,11 +68,9 @@ class dot_dot
 
             // 設置小球的新位置
             ball.setPosition(now_x, now_y);
-            updateTrail();
-            std::cout << now_x << "," << now_y << "\n";
         }
         void move() { move(speed); }
-        void move(float step)//移動 step 步，碰到邊緣就反彈
+        void move(int step)//移動 step 步，碰到邊緣就反彈
         {
             // 更新位置
             now_x += direction.x * step;
@@ -84,6 +82,7 @@ class dot_dot
                 direction.x = -direction.x;//變號，方向相反
                 direction.x += (static_cast<float>(rand() % 20 - 10) / 100.0f);
                 moveRandomly();
+
             }
 
             if (now_y <= 0 || now_y >= height - ball.getRadius() * 2)
@@ -98,7 +97,7 @@ class dot_dot
             direction.y = (direction.y / length);
             // 更新小球位置
             ball.setPosition(now_x, now_y);
-            //updateTrail();
+            updateTrail();
         }
 private:
     void updateTrail()
@@ -118,7 +117,7 @@ private:
         for (std::size_t i = 0; i < trail.size(); ++i)
         {
             sf::Vertex& v = trail[i];
-            float alpha = 255 * (1.0f - static_cast<float>(i) / MAX_TRAIL_LENGTH); // 漸變透明度
+            float alpha = 255 * (1.0f + static_cast<float>(i) / MAX_TRAIL_LENGTH); // 漸變透明度
             v.color.a = static_cast<sf::Uint8>(alpha);
         }
     }
@@ -163,7 +162,7 @@ int main()
 
         for (auto& ball : ball_group1)
         {
-            ball.move(0.1f); // 每顆球移動
+            ball.move(1); // 每顆球移動
         }
 
         window.clear();
