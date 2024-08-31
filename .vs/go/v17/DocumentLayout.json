@@ -5,6 +5,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|D:\\coding\\sfml\\animate\\go\\go\\go.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|solutionrelative:go\\go.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|D:\\CODING\\SFML\\ANIMATE\\GO\\EXTERNAL\\SFML\\INCLUDE\\SFML\\GRAPHICS\\GLYPH.HPP||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|solutionrelative:EXTERNAL\\SFML\\INCLUDE\\SFML\\GRAPHICS\\GLYPH.HPP||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,13 +30,26 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Glyph.hpp",
+              "DocumentMoniker": "D:\\coding\\sfml\\animate\\go\\External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
+              "RelativeDocumentMoniker": "External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
+              "ToolTip": "D:\\coding\\sfml\\animate\\go\\External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
+              "RelativeToolTip": "External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
+              "ViewState": "AQIAACAAAAAAAAAAAIAwwDAAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-08-31T01:01:40.653Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "go.cpp",
               "DocumentMoniker": "D:\\coding\\sfml\\animate\\go\\go\\go.cpp",
               "RelativeDocumentMoniker": "go\\go.cpp",
               "ToolTip": "D:\\coding\\sfml\\animate\\go\\go\\go.cpp",
               "RelativeToolTip": "go\\go.cpp",
-              "ViewState": "AQIAAGcAAAAAAAAAAAAAAG0AAAAfAAAA",
+              "ViewState": "AQIAAF0AAAAAAAAAAAAAAGQAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-08-30T09:55:44.621Z",
               "EditorCaption": ""

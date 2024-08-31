@@ -2,6 +2,7 @@
 #include <ctime>    // 包含 time()
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <vector>
 #define width 800
 #define height 600
 class dot_dot
@@ -15,16 +16,16 @@ class dot_dot
         sf::Vector2f direction; // 移動方向向量
         sf::CircleShape ball;
     public:
-        dot_dot(float x, float y,float size)
+        dot_dot(float size,float x= rand() % width, float y= rand() % height)
         //給出生點座標，生成一顆球
         {
-            srand(time(NULL));
+            
             ball.setRadius(size);
             ball.setFillColor(sf::Color::Magenta);
             ball.setPosition(x, y); // 設定小球初始位置，使其在視窗中心附近
             updatePosit(x, y);
             moveRandomly();
-            direction = sf::Vector2f(1.0f, 1.0f); // 初始方向，可以設置為任意值
+            direction = sf::Vector2f(static_cast<float>(rand() % 10), static_cast<float>(rand() % 10)); // 初始方向，可以設置為任意值
         }
         void display(sf::RenderWindow& window)
         {
@@ -51,12 +52,10 @@ class dot_dot
             // 計算距離
             float distance = std::sqrt(dx * dx + dy * dy);
 
-            // 規範化向量並乘以移動速度
-            float moveSpeed = 0.5f; // 移動速度，可以根據需要調整
             if (distance != 0) // 防止除以零
             {
-                dx = (dx / distance) * moveSpeed;
-                dy = (dy / distance) * moveSpeed;
+                dx = (dx / distance) * speed;
+                dy = (dy / distance) * speed;
             }
 
             // 更新當前位置
@@ -68,6 +67,7 @@ class dot_dot
 
             std::cout << now_x << "," << now_y << "\n";
         }
+        void move() { move(speed); }
         void move(float step)//移動 step 步，碰到邊緣就反彈
         {
             // 更新位置
@@ -78,28 +78,36 @@ class dot_dot
             if (now_x <= 0 || now_x >= width - ball.getRadius() * 2)
             {
                 direction.x = -direction.x;//變號，方向相反
-                direction.x += (static_cast<float>(rand() % 200 - 100) / 100.0f); // 隨機調整方向
+                direction.x += (static_cast<float>(rand() % 20 - 10) / 100.0f);
+                moveRandomly();
             }
 
             if (now_y <= 0 || now_y >= height - ball.getRadius() * 2)
             {
                 direction.y = -direction.y;//變號，方向相反
-                direction.y += (static_cast<float>(rand() % 200 - 100) / 100.0f); // 隨機調整方向
+                direction.y += (static_cast<float>(rand() % 20 - 10) / 100.0f);
+                moveRandomly();
 
             }
             float length = sqrt(direction.x * direction.x + direction.y * direction.y);
-            direction.x = (direction.x / length) * speed;
-            direction.y = (direction.y / length) * speed;
+            direction.x = (direction.x / length) ;
+            direction.y = (direction.y / length);
             // 更新小球位置
             ball.setPosition(now_x, now_y);
         }
 };
 int main()
 {
+
+    srand(static_cast<unsigned>(time(NULL)));
     // 創建一個 800x600 的視窗
     sf::RenderWindow window(sf::VideoMode(width,height), "NGGYU");
     
-    dot_dot script1(375.f, 275.f,20);
+    std::vector<dot_dot> ball_group1;
+    for (int i = 0; i < 30; ++i)
+    {
+        ball_group1.emplace_back(10.f); // 每顆球的半徑為 10
+    }
     while (window.isOpen())
     {
         sf::Event event;
@@ -110,11 +118,20 @@ int main()
                 window.close();
         }
 
-        window.clear(sf::Color::Yellow); // 設定背景顏色為黑色
-        script1.move(0.1);
-        script1.display(window);
-        window.display();
+        //window.clear(sf::Color::Yellow); // 設定背景顏色為黑色
+        //window.display();
+        // 移動每顆球
+        for (auto& ball : ball_group1)
+        {
+            ball.move(0.1); // 每顆球移動
+        }
 
+        window.clear(sf::Color::Yellow);
+        for (auto& ball : ball_group1)
+        {
+            ball.display(window);
+        }
+        window.display();
     }
 
     return 0;
