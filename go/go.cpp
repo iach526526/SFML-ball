@@ -4,8 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <deque>
-#define width 800
-#define height 600
+#define width 1920
+#define height 1080
+#define MAX_TRAIL_LENGTH 300
 class dot_dot
 {
     private:
@@ -17,7 +18,6 @@ class dot_dot
         sf::Vector2f direction; // 移動方向向量
         sf::CircleShape ball;
         std::deque<sf::Vertex> trail; // 用來儲存軌跡點
-        static constexpr int MAX_TRAIL_LENGTH = 1000; // 最大軌跡長度
     public:
         dot_dot(float size,float x= rand() % width, float y= rand() % height)
         //給出生點座標，生成一顆球
@@ -27,8 +27,8 @@ class dot_dot
             ball.setFillColor(sf::Color::Magenta);
             ball.setPosition(x, y); // 設定小球初始位置，使其在視窗中心附近
             updatePosit(x, y);
-            moveRandomly();
-            direction = sf::Vector2f(static_cast<float>(rand() % 10), static_cast<float>(rand() % 10)); // 初始方向，可以設置為任意值
+            //moveRandomly();
+            direction = sf::Vector2f(static_cast<float>(rand() % 360)-180, static_cast<float>(rand() % 360)-180); // 初始方向，可以設置為任意值
         }
         void display(sf::RenderWindow& window)
         {
@@ -68,8 +68,6 @@ class dot_dot
 
             // 設置小球的新位置
             ball.setPosition(now_x, now_y);
-            updateTrail();
-            std::cout << now_x << "," << now_y << "\n";
         }
         void move() { move(speed); }
         void move(float step)//移動 step 步，碰到邊緣就反彈
@@ -84,6 +82,7 @@ class dot_dot
                 direction.x = -direction.x;//變號，方向相反
                 direction.x += (static_cast<float>(rand() % 20 - 10) / 100.0f);
                 moveRandomly();
+
             }
 
             if (now_y <= 0 || now_y >= height - ball.getRadius() * 2)
@@ -98,7 +97,10 @@ class dot_dot
             direction.y = (direction.y / length);
             // 更新小球位置
             ball.setPosition(now_x, now_y);
-            //updateTrail();
+            updateTrail();
+        }
+        sf::CircleShape& getShape() {
+            return ball;
         }
 private:
     void updateTrail()
@@ -118,7 +120,7 @@ private:
         for (std::size_t i = 0; i < trail.size(); ++i)
         {
             sf::Vertex& v = trail[i];
-            float alpha = 255 * (1.0f - static_cast<float>(i) / MAX_TRAIL_LENGTH); // 漸變透明度
+            float alpha = 255 * (1.0f + static_cast<float>(i) / MAX_TRAIL_LENGTH); // 漸變透明度
             v.color.a = static_cast<sf::Uint8>(alpha);
         }
     }
@@ -133,46 +135,71 @@ private:
         window.draw(trailArray);  // 繪製軌跡
     }
 };
-int main()
-{
+#include <SFML/Graphics.hpp>
+#include <vector>
 
+class LinkDrawer {
+public:
+    LinkDrawer(float maxDistance, sf::Color color, float thickness)
+        : maxDistance(maxDistance), color(color), thickness(thickness) {}
 
+    void draw(sf::RenderWindow& window, const std::vector<sf::CircleShape>& balls) {
+        for (size_t i = 0; i < balls.size(); ++i) {
+            for (size_t j = i + 1; j < balls.size(); ++j) {
+                sf::Vector2f pos1 = balls[i].getPosition();
+                sf::Vector2f pos2 = balls[j].getPosition();
+                float distance = sqrt(pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2));
 
-    srand(static_cast<unsigned>(time(NULL)));
-    // 創建一個 800x600 的視窗
-    sf::RenderWindow window(sf::VideoMode(width,height), "NGGYU");
-    
-    std::vector<dot_dot> ball_group1;
-    for (int i = 0; i < 30; ++i)
-    {
-        ball_group1.emplace_back(10.f); // 每顆球的半徑為 10
+                if (distance < maxDistance) {
+                    sf::Vertex line[] = {
+                        sf::Vertex(pos1 + sf::Vector2f(balls[i].getRadius(), balls[i].getRadius()), color),
+                        sf::Vertex(pos2 + sf::Vector2f(balls[j].getRadius(), balls[j].getRadius()), color)
+                    };
+                    window.draw(line, 2, sf::Lines);
+                }
+            }
+        }
     }
-    while (window.isOpen())
-    {
+
+private:
+    float maxDistance;
+    sf::Color color;
+    float thickness;
+};
+int main() {
+    srand(static_cast<unsigned>(time(NULL)));
+
+    sf::RenderWindow window(sf::VideoMode(width, height), "NGGYU");
+
+    std::vector<dot_dot> ball_group1;
+    std::vector<sf::CircleShape> ball_shapes;
+    for (int i = 0; i < 100; ++i) {
+        ball_group1.emplace_back(10.f);
+        ball_shapes.push_back(ball_group1.back().getShape());
+    }
+
+    LinkDrawer linkDrawer(150.0f, sf::Color::White, 1.0f);
+
+    while (window.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // 關閉視窗的事件處理
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        //window.clear(sf::Color::Yellow); // 設定背景顏色為黑色
-        //window.display();
-        // 移動每顆球
-
-        for (auto& ball : ball_group1)
-        {
-            ball.move(0.1f); // 每顆球移動
+        for (auto& ball : ball_group1) {
+            ball.move(1.0f);
+        }
+        for (int i = 0; i < ball_group1.size(); ++i) {
+            ball_shapes[i] = ball_group1[i].getShape();
         }
 
-        window.clear();
-        for (auto& ball : ball_group1)
-        {
+        linkDrawer.draw(window, ball_shapes);   
+        for (auto& ball : ball_group1) {
             ball.display(window);
         }
         window.display();
-
+        window.clear();
     }
 
     return 0;

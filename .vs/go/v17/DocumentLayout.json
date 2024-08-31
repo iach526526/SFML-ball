@@ -7,6 +7,9 @@
       "RelativeMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|solutionrelative:go\\go.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{90467D29-5E4B-4113-8E7E-1508BABEACE5}|go\\go.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.39.33519\\INCLUDE\\SAL.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\coding\\sfml\\animate\\go\\External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -18,7 +21,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -31,6 +34,17 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "sal.h",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.39.33519\\include\\sal.h",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.39.33519\\include\\sal.h",
+              "ViewState": "AQIAACcJAAAAAAAAAAAYwDgJAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-08-31T06:47:57.102Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Glyph.hpp",
               "DocumentMoniker": "D:\\coding\\sfml\\animate\\go\\External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
               "RelativeDocumentMoniker": "External\\SFML\\include\\SFML\\Graphics\\Glyph.hpp",
@@ -48,7 +62,7 @@
               "RelativeDocumentMoniker": "go\\go.cpp",
               "ToolTip": "D:\\coding\\sfml\\animate\\go\\go\\go.cpp",
               "RelativeToolTip": "go\\go.cpp",
-              "ViewState": "AQIAAJwAAAAAAAAAAAAAAEgAAAAJAAAA",
+              "ViewState": "AQIAALIAAAAAAAAAAAAAAMkAAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-08-30T09:55:44.621Z",
               "EditorCaption": ""
