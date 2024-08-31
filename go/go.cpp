@@ -4,9 +4,20 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <deque>
+//Window size
 #define width 1920
 #define height 1080
-#define MAX_TRAIL_LENGTH 300
+
+//color Format: (R,G,B,A)
+#define trailColor sf::Color::Color(128, 0, 128, 128)
+#define ballColor sf::Color::Color(154, 201, 60, 255)
+#define bgColor sf::Color::Color(0, 0, 25, 255)
+
+#define enable_trail 1 //bool: 0 or 1
+#define MAX_TRAIL_LENGTH 50
+#define ballSpeed 0.5f
+#define ballSize 1.f
+#define ballCount 300
 class dot_dot
 {
     private:
@@ -24,7 +35,7 @@ class dot_dot
         {
             
             ball.setRadius(size);
-            ball.setFillColor(sf::Color::Magenta);
+            ball.setFillColor(ballColor);
             ball.setPosition(x, y); // 設定小球初始位置，使其在視窗中心附近
             updatePosit(x, y);
             //moveRandomly();
@@ -97,7 +108,7 @@ class dot_dot
             direction.y = (direction.y / length);
             // 更新小球位置
             ball.setPosition(now_x, now_y);
-            updateTrail();
+            if (enable_trail)updateTrail();
         }
         sf::CircleShape& getShape() {
             return ball;
@@ -107,7 +118,7 @@ private:
     {
         // 添加當前位置到軌跡
         sf::Vertex vertex(sf::Vector2f(now_x + ball.getRadius(), now_y + ball.getRadius()));
-        vertex.color = sf::Color(255, 0, 255, 255); // 初始顏色 (不透明)
+        vertex.color = trailColor; // 初始顏色 (不透明)
         trail.push_back(vertex);
 
         // 如果超過最大長度，刪除最舊的點
@@ -135,25 +146,43 @@ private:
         window.draw(trailArray);  // 繪製軌跡
     }
 };
-#include <SFML/Graphics.hpp>
-#include <vector>
 
+float distancePointToLine(sf::Vector2f point, sf::Vector2f lineStart, sf::Vector2f lineEnd) {
+    float lineMag = sqrt(pow(lineEnd.x - lineStart.x, 2) + pow(lineEnd.y - lineStart.y, 2));
+    float u = ((point.x - lineStart.x) * (lineEnd.x - lineStart.x) + (point.y - lineStart.y) * (lineEnd.y - lineStart.y)) / (lineMag * lineMag);
+
+    if (u < 0.0f) u = 0.0f;
+    if (u > 1.0f) u = 1.0f;
+
+    sf::Vector2f intersection(
+        lineStart.x + u * (lineEnd.x - lineStart.x),
+        lineStart.y + u * (lineEnd.y - lineStart.y)
+    );
+
+    return sqrt(pow(intersection.x - point.x, 2) + pow(intersection.y - point.y, 2));
+}
 class LinkDrawer {
 public:
     LinkDrawer(float maxDistance, sf::Color color, float thickness)
         : maxDistance(maxDistance), color(color), thickness(thickness) {}
 
     void draw(sf::RenderWindow& window, const std::vector<sf::CircleShape>& balls) {
+        sf::Vector2f mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+
         for (size_t i = 0; i < balls.size(); ++i) {
             for (size_t j = i + 1; j < balls.size(); ++j) {
-                sf::Vector2f pos1 = balls[i].getPosition();
-                sf::Vector2f pos2 = balls[j].getPosition();
+                sf::Vector2f pos1 = balls[i].getPosition() + sf::Vector2f(balls[i].getRadius(), balls[i].getRadius());
+                sf::Vector2f pos2 = balls[j].getPosition() + sf::Vector2f(balls[j].getRadius(), balls[j].getRadius());
                 float distance = sqrt(pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2));
 
                 if (distance < maxDistance) {
+                    float mouseDistance = distancePointToLine(mousePos, pos1, pos2);
+                    sf::Color lineColor = color;
+                    lineColor.a = static_cast<sf::Uint8>(255 * std::max(0.0f, 1.0f - mouseDistance / maxDistance));
+
                     sf::Vertex line[] = {
-                        sf::Vertex(pos1 + sf::Vector2f(balls[i].getRadius(), balls[i].getRadius()), color),
-                        sf::Vertex(pos2 + sf::Vector2f(balls[j].getRadius(), balls[j].getRadius()), color)
+                        sf::Vertex(pos1, lineColor),
+                        sf::Vertex(pos2, lineColor)
                     };
                     window.draw(line, 2, sf::Lines);
                 }
@@ -169,12 +198,12 @@ private:
 int main() {
     srand(static_cast<unsigned>(time(NULL)));
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "NGGYU");
+    sf::RenderWindow window(sf::VideoMode(width, height), "NGGYU!");
 
     std::vector<dot_dot> ball_group1;
     std::vector<sf::CircleShape> ball_shapes;
-    for (int i = 0; i < 100; ++i) {
-        ball_group1.emplace_back(10.f);
+    for (int i = 0; i < ballCount; ++i) {
+        ball_group1.emplace_back(ballSize);
         ball_shapes.push_back(ball_group1.back().getShape());
     }
 
@@ -188,7 +217,7 @@ int main() {
         }
 
         for (auto& ball : ball_group1) {
-            ball.move(1.0f);
+            ball.move(ballSpeed);
         }
         for (int i = 0; i < ball_group1.size(); ++i) {
             ball_shapes[i] = ball_group1[i].getShape();
@@ -199,7 +228,7 @@ int main() {
             ball.display(window);
         }
         window.display();
-        window.clear();
+        window.clear(bgColor);
     }
 
     return 0;
